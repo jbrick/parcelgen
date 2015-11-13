@@ -16,4 +16,8 @@ android {
             res.srcDirs = ["parcelgen-runtime/res"]
         }
     }
+
+    dependencies {
+        compile "org.apache.commons:commons-lang3:3.4"
+    }
 }

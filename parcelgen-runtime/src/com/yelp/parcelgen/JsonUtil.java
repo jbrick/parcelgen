@@ -28,7 +28,7 @@ public class JsonUtil {
      * @return An ArrayList of new objects created by <code>creator</code>.
      * @throws JSONException If parsing of one of the objects fails.
      */
-    public static <E> ArrayList<E> parseJsonList(JSONArray array, JsonParser<E> creator)
+    public static <E extends Parcelable> ArrayList<E> parseJsonList(JSONArray array, JsonParser<E> creator)
             throws JSONException {
         if (array == null) {
             return new ArrayList<E>();
@@ -46,6 +46,66 @@ public class JsonUtil {
                 }
             }
         }
+        return list;
+    }
+
+    public static List<Boolean> parseBooleanJsonList(JSONArray array)
+            throws JSONException {
+        if (array == null) {
+            return new ArrayList<Boolean>();
+        }
+
+        int size = array.length();
+        ArrayList<Boolean> list = new ArrayList<Boolean>(size);
+        for (int i = 0; i < size; i++) {
+            list.add(array.getBoolean(i));
+        }
+
+        return list;
+    }
+
+    public static List<Double> parseDoubleJsonList(JSONArray array)
+            throws JSONException {
+        if (array == null) {
+            return new ArrayList<Double>();
+        }
+
+        int size = array.length();
+        ArrayList<Double> list = new ArrayList<Double>(size);
+        for (int i = 0; i < size; i++) {
+            list.add(array.getDouble(i));
+        }
+
+        return list;
+    }
+
+    public static List<Integer> parseIntegerJsonList(JSONArray array)
+            throws JSONException {
+        if (array == null) {
+            return new ArrayList<Integer>();
+        }
+
+        int size = array.length();
+        ArrayList<Integer> list = new ArrayList<Integer>(size);
+        for (int i = 0; i < size; i++) {
+            list.add(array.getInt(i));
+        }
+
+        return list;
+    }
+
+    public static List<Long> parseLongJsonList(JSONArray array)
+            throws JSONException {
+        if (array == null) {
+            return new ArrayList<Long>();
+        }
+
+        int size = array.length();
+        ArrayList<Long> list = new ArrayList<Long>(size);
+        for (int i = 0; i < size; i++) {
+            list.add(array.getLong(i));
+        }
+
         return list;
     }
 
@@ -99,13 +159,57 @@ public class JsonUtil {
         return Arrays.asList(stringArray);
     }
 
-    public static <Param extends Parcelable> Map<String, Param> parseJsonMap(JSONObject object,
-            JsonParser<Param> creator) throws JSONException {
-        Map<String, Param> map = new ArrayMap<String, Param>();
+    public static <T extends Parcelable> Map<String, T> parseJsonMap(JSONObject object,
+            JsonParser<T> creator) throws JSONException {
+        Map<String, T> map = new ArrayMap<String, T>();
         Iterator<String> keys = object.keys();
         while (keys.hasNext()) {
             String key = keys.next();
             map.put(key, creator.parse((JSONObject) object.get(key)));
+        }
+        return map;
+    }
+
+    public static Map<String, Boolean> parseBooleanJsonMap(JSONObject object)
+            throws JSONException {
+        Map<String, Boolean> map = new ArrayMap<String, Boolean>();
+        Iterator<String> keys = object.keys();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            map.put(key, object.getBoolean(key));
+        }
+        return map;
+    }
+
+    public static Map<String, Double> parseDoubleJsonMap(JSONObject object)
+            throws JSONException {
+        Map<String, Double> map = new ArrayMap<String, Double>();
+        Iterator<String> keys = object.keys();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            map.put(key, object.getDouble(key));
+        }
+        return map;
+    }
+
+    public static Map<String, Integer> parseIntegerJsonMap(JSONObject object)
+            throws JSONException {
+        Map<String, Integer> map = new ArrayMap<String, Integer>();
+        Iterator<String> keys = object.keys();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            map.put(key, object.getInt(key));
+        }
+        return map;
+    }
+
+    public static Map<String, Long> parseLongJsonMap(JSONObject object)
+            throws JSONException {
+        Map<String, Long> map = new ArrayMap<String, Long>();
+        Iterator<String> keys = object.keys();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            map.put(key, object.getLong(key));
         }
         return map;
     }
@@ -118,11 +222,11 @@ public class JsonUtil {
         return output;
     }
 
-    public static <T extends Parcelable> Map<String, T> fromBundle(Bundle input, Class<T> claz) {
+    public static <T> Map<String, T> fromBundle(Bundle input, Class<T> claz) {
         input.setClassLoader(claz.getClassLoader());
         Map<String, T> output = new ArrayMap<String, T>();
         for(String key : input.keySet()) {
-            output.put(key, (T) input.getParcelable(key));
+            output.put(key, (T) input.get(key));
         }
         return output;
     }

@@ -5,7 +5,6 @@ repositories {
 apply plugin: "com.android.library"
 
 android {
-    publishNonDefault true
     compileSdkVersion 15
     buildToolsVersion "25.0.2"
 
